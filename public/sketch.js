@@ -18,10 +18,10 @@ function setup() {
     let player2XPos = (width/2 + (width - (width/2 - playerTankRadius + playerTankRadius * 2))/2 + playerTankRadius);
       console.log(player2XPos );
     playerTank2 = new PlayerTank(player2XPos, height - playerTankRadius, 25);
-    computerPlayers.push(new EasyTank(playerTankRadius, playerTankRadius, playerTankRadius));
-    computerPlayers.push(new EasyTank(width/2 - playerTankRadius / 2, playerTankRadius, playerTankRadius));
-    computerPlayers.push(new EasyTank(width - playerTankRadius, playerTankRadius, playerTankRadius));
-    frameRate(5);
+    computerPlayers.push(new EasyTank(playerTankRadius, playerTankRadius + 10, playerTankRadius));
+    computerPlayers.push(new EasyTank(width/2 - playerTankRadius / 2, playerTankRadius + 10, playerTankRadius));
+    computerPlayers.push(new EasyTank(width - playerTankRadius, playerTankRadius + 10, playerTankRadius));
+    frameRate(20);
 }
 function draw(){
 
