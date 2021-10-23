@@ -3,7 +3,9 @@ class Tank {
     bullets = [];
     firingX;
     firingY;
-    defaultSpeed = 5;
+    defaultBulletSpeed = 1; //must be 2 or more
+    nonStopRunSoFar = 0;
+    movementSpeed = 0.5;
 
     constructor(x, y, radius) {
         this.x = x;
@@ -21,12 +23,22 @@ class Tank {
 
     canRandomFire() {
         let isTrue = Math.floor(random(0, 1) * this.fireTriggerChanceValue) === this.fireTriggerChanceValue - 1;
-        console.log('in random fire called '+isTrue);
+       // console.log('in random fire called '+isTrue);
         return isTrue;
     }
 
-    canStopMove() {
-        return Math.floor(random(0, 1) * this.moveStopChanceValue) === this.moveStopChanceValue - 1;
+    randomStopEvent() {
+        let isTrue = false;
+        if(this.nonStopRunSoFar == this.moveStopChanceValue) {
+            if(Math.floor(random(0, 1) * 2) === 1) {
+                isTrue = true;
+                this.nonStopRunSoFar = 0;
+            }
+
+        } else if(this.nonStopRunSoFar < this.moveStopChanceValue) {
+            this.nonStopRunSoFar++;
+        }
+        return isTrue;
     }
 
     canChangeDirection() {
@@ -61,13 +73,13 @@ class Tank {
   
     movePlayer() {
         if(this.direction === 'left') {
-            this.x -= this.radius / 4;
+            this.x -= (this.movementSpeed * 8) // this.radius / 4;
         } else if(this.direction === 'right') {
-            this.x += this.radius / 4;
+            this.x += (this.movementSpeed * 8) // this.radius / 4;
         } else if(this.direction === 'up') {
-            this.y -= this.radius / 4;
+            this.y -= (this.movementSpeed * 8) //this.radius / 4;
         } else if(this.direction === 'down') {
-            this.y += this.radius / 4;
+            this.y += (this.movementSpeed * 8) //this.radius / 4;
         }
         this.fetchEdgesDetailForDirection();
     }
@@ -136,22 +148,22 @@ class Tank {
             let isSpliceNeeded = false;
             rect(bullet.x, bullet.y, 5, 5);
             if(bullet.direction === 'left') {
-                bullet.x -= (this.defaultSpeed * 2);
+                bullet.x -= (this.defaultBulletSpeed * 2);
                 if(bullet.x < 0) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'right') {
-                bullet.x += (this.defaultSpeed * 2);
+                bullet.x += (this.defaultBulletSpeed * 2);
                 if(bullet.x > width) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'up') {
-                bullet.y -= (this.defaultSpeed * 2); 
+                bullet.y -= (this.defaultBulletSpeed * 2); 
                 if(bullet.y > width) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'down') {
-                bullet.y += (this.defaultSpeed * 2); 
+                bullet.y += (this.defaultBulletSpeed * 2); 
                 if(bullet.y > height) {
                     isSpliceNeeded = true;
                 }
@@ -167,13 +179,13 @@ class Tank {
     level = 3;
     directionX = 1;
     directionY = 1;
-    movementSpeed = 3;
+    
   
     constructor(x, y, radius) {
         super(x,y, radius);
         this.direction = 'down';
         this.fireTriggerChanceValue = 15; // means can fire every 6 second chance
-        this.moveStopChanceValue = 5; // means can stop move anytime 1 out of 6 second chance
+        this.moveStopChanceValue = 10; // means can stop move anytime 1 out of 6 second chance
         this.changePositionChanceValue = 25; // means can stop move anytime 1 out of 6 second chance
         this.setFiringValuesForDirection(x, y + radius/2);
     }
@@ -253,7 +265,7 @@ class Tank {
         }
 
         //anonymous checks
-        if(this.y < 0) {
+        if(this.y < 0 - this.movementSpeed) {
             if(this.x < 0) {
                 this.x = 0;
             } else if(this.x > width) {
@@ -261,21 +273,21 @@ class Tank {
             }
             this.y = 0;
             newDirection = 'down';
-        } else if (this.y > height) {
+        } else if (this.y + this.movementSpeed > height) {
             if(this.x < 0) {
                 this.x = 0;
             } else if(this.x > width) {
                 this.x = width;
             }
             newDirection = 'up';
-        } else if (this.x < 0) {
+        } else if (this.x - this.movementSpeed < 0) {
             if(this.y < 0) {
                 this.y = 0;
             } else if(this.y > height) {
                 this.y = height;
             }
             newDirection = 'right';
-        } else if(this.x > width) {
+        } else if(this.x + this.movementSpeed > width) {
             if(this.y < 0) {
                 this.y = 0;
             } else if(this.y > height) {
@@ -313,12 +325,12 @@ class Tank {
     
     draw() {
         fill('#00ff00');
-        console.log('frameCount % 10' + frameCount % 10);
+        //console.log('frameCount % 10' + frameCount % 10);
         
         if(frameCount % 30 === 0 && this.canChangeDirection()) {
-            this.changeDirection(this.getRandomDirection());
+            //this.changeDirection(this.getRandomDirection());
         }
-        if(this.canStopMove()) {
+        if(this.randomStopEvent()) {
 
         } else {
             //move only if possible
@@ -340,22 +352,22 @@ class Tank {
             let isSpliceNeeded = false;
             rect(bullet.x, bullet.y, 5, 5);
             if(bullet.direction === 'left') {
-                bullet.x -= (this.defaultSpeed * 2);
+                bullet.x -= (this.defaultBulletSpeed * 2);
                 if(bullet.x < 0) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'right') {
-                bullet.x += (this.defaultSpeed * 2);
+                bullet.x += (this.defaultBulletSpeed * 2);
                 if(bullet.x > width) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'up') {
-                bullet.y -= (this.defaultSpeed * 2); 
+                bullet.y -= (this.defaultBulletSpeed * 2); 
                 if(bullet.y > width) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'down') {
-                bullet.y += (this.defaultSpeed * 2); 
+                bullet.y += (this.defaultBulletSpeed * 2); 
                 if(bullet.y > height) {
                     isSpliceNeeded = true;
                 }
