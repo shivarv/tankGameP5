@@ -6,6 +6,7 @@ let width = 700;
 let x = 10, y = 10, radius = 10;
 let easyTank1, brickCage , playerTank1, playerTank2;
 let brickCageDiameter = 75;
+let COMPUTER_PLAYER_COUNT = 3;
 
 let playerTankDiameter = 50;
 let computerTankDiameter = 50;
@@ -21,6 +22,7 @@ let playerType = 'player1';
 
 let computerPlayers = [];
 
+let bullets = {player1: [], player2: [], computer: []}
 
 function setup() {
     createCanvas(width, height);
@@ -29,12 +31,13 @@ function setup() {
     let player2XPos = (width - ((width/2  - x) / 2 + playerTankDiameter));
       console.log(player2XPos );
     playerTank2 = new PlayerTank(player2XPos, height - playerTankDiameter - tankStartYGap, playerTankDiameter);
-    computerPlayers.push(new EasyTank((width/2  - x) / 2, playerTankDiameter + tankStartYGap, playerTankDiameter));
-    //computerPlayers.push(new EasyTank(playerTankDiameter, playerTankDiameter + tankStartYGap, playerTankDiameter));
-    computerPlayers.push(new EasyTank(width/2 - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter));
-    computerPlayers.push(new EasyTank(width - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter));
+  //  computerPlayers.push(new EasyTank((width/2  - x) / 2, playerTankDiameter + tankStartYGap, playerTankDiameter));
+  //  computerPlayers.push(new EasyTank(width/2 - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter));
+  //  computerPlayers.push(new EasyTank(width - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter));
     frameRate(20);
 }
+
+
 function draw(){
 
     background(50);
@@ -44,17 +47,74 @@ function draw(){
     playerTank1.draw();
     fill('#0000FF');
     playerTank2.draw();
+    renderBullets();
+    /*
     for(let compPlayer of computerPlayers) {
       compPlayer.draw();
+    } */
+    // actForIntersectionOfBullets();
+}
+
+function renderBullets() {
+    if(bullets.player1.length > 0) {
+        renderBulletsArray(bullets.player1);
     }
-    actForIntersectionOfBullets();
+    if(bullets.player2.length > 0) {
+        renderBulletsArray(bullets.player2);
+    }
+    if(bullets.computer.length > 0) {
+        renderBulletsArray(bullets.computer);
+
+    }
+}
+
+function renderBulletsArray(bullets) {
+    for(let i = 0; i < bullets.length; i++) {
+            let bullet = bullets[i];
+            let isSpliceNeeded = false;
+            if(bullet.direction === 'left') {
+                bullet.x -= (bullet.defaultBulletSpeed * 2);
+                if(bullet.x < 0) {
+                    isSpliceNeeded = true;
+                }
+            } else if(bullet.direction === 'right') {
+                bullet.x += (bullet.defaultBulletSpeed * 2);
+                if(bullet.x > width) {
+                    isSpliceNeeded = true;
+                }
+            } else if(bullet.direction === 'up') {
+                bullet.y -= (bullet.defaultBulletSpeed * 2); 
+                if(bullet.y > width) {
+                    isSpliceNeeded = true;
+                }
+            } else if(bullet.direction === 'down') {
+                bullet.y += (bullet.defaultBulletSpeed * 2); 
+                if(bullet.y > height) {
+                    isSpliceNeeded = true;
+                }
+            }
+            if(isSpliceNeeded) {
+                bullets.splice(i, 1);
+            }
+        }
+       for(let bullet of bullets) {
+            bullet.draw();
+
+       }
 }
 
 
 function mouseClicked() {
     //console.log(mouseX + ' '+mouseY);
+    fireBullet();
+}
+
+function fireBullet() {
+    let playerTypeCopy = playerType;
     let player = getCurrentPlayerRef();
-    player.fireBullet();
+    let playerBullets = bullets[playerTypeCopy];
+    playerBullets.push(new Bullet(playerTypeCopy, player.direction, player.firingX, player.firingY, TANK_COLORS[playerTypeCopy]));
+   // bullets = {player1: [], player2: [], computer: []}
 }
 
 function stopGame() {
