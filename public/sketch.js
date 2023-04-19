@@ -31,9 +31,9 @@ function setup() {
     let player2XPos = (width - ((width/2  - x) / 2 + playerTankDiameter));
       console.log(player2XPos );
     playerTank2 = new PlayerTank(player2XPos, height - playerTankDiameter - tankStartYGap, playerTankDiameter);
-  //  computerPlayers.push(new EasyTank((width/2  - x) / 2, playerTankDiameter + tankStartYGap, playerTankDiameter));
-  //  computerPlayers.push(new EasyTank(width/2 - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter));
-  //  computerPlayers.push(new EasyTank(width - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter));
+    computerPlayers.push(new EasyTank((width/2  - x) / 2, playerTankDiameter + tankStartYGap, playerTankDiameter, fireComputerBullet.bind(this)));
+    computerPlayers.push(new EasyTank(width/2 - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter, fireComputerBullet.bind(this)));
+    computerPlayers.push(new EasyTank(width - computerTankDiameter, computerTankDiameter + tankStartYGap, computerTankDiameter, fireComputerBullet.bind(this)));
     frameRate(20);
 }
 
@@ -48,10 +48,9 @@ function draw(){
     fill('#0000FF');
     playerTank2.draw();
     renderBullets();
-    /*
     for(let compPlayer of computerPlayers) {
       compPlayer.draw();
-    } */
+    }
     // actForIntersectionOfBullets();
 }
 
@@ -117,6 +116,12 @@ function fireBullet() {
    // bullets = {player1: [], player2: [], computer: []}
 }
 
+function fireComputerBullet(computerTank) {
+    let playerType = 'computer';
+    let computerBullets = bullets['computer'];
+    computerBullets.push(new Bullet(playerType, computerTank.direction, computerTank.firingX, computerTank.firingY, TANK_COLORS[playerType]));
+}
+
 function stopGame() {
     noLoop();
 }
@@ -157,7 +162,7 @@ function moveCharacterType(playerType, keyCodeRecieved, isPublishEvent) {
 
 
 function getCurrentPlayerRef() {
-    return playerTank2;
+    return playerTank1;
 }
 
 function getCurrentPlayerRefByName(playerName) {

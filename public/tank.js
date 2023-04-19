@@ -143,37 +143,6 @@ class PlayerTank extends Tank {
         this.setFiringValuesForDirection(tankHittingObj.firingX, tankHittingObj.firingY);
         
         rect(this.x, this.y, this.radius, this.radius);
-        /*
-        for(let i = 0; i < this.bullets.length; i++) {
-            let bullet = this.bullets[i];
-            let isSpliceNeeded = false;
-            rect(bullet.x, bullet.y, 5, 5);
-            if(bullet.direction === 'left') {
-                bullet.x -= (this.defaultBulletSpeed * 2);
-                if(bullet.x < 0) {
-                    isSpliceNeeded = true;
-                }
-            } else if(bullet.direction === 'right') {
-                bullet.x += (this.defaultBulletSpeed * 2);
-                if(bullet.x > width) {
-                    isSpliceNeeded = true;
-                }
-            } else if(bullet.direction === 'up') {
-                bullet.y -= (this.defaultBulletSpeed * 2); 
-                if(bullet.y > width) {
-                    isSpliceNeeded = true;
-                }
-            } else if(bullet.direction === 'down') {
-                bullet.y += (this.defaultBulletSpeed * 2); 
-                if(bullet.y > height) {
-                    isSpliceNeeded = true;
-                }
-            }
-            if(isSpliceNeeded) {
-                this.bullets.splice(i, 1);
-            }
-        }
-        */
     }
 }
 
@@ -181,15 +150,16 @@ class EasyTank extends Tank {
     level = 3;
     directionX = 1;
     directionY = 1;
-    
+    fireMethodRef;
   
-    constructor(x, y, radius) {
+    constructor(x, y, radius, fireMethodRef) {
         super(x,y, radius);
         this.direction = 'down';
         this.fireTriggerChanceValue = 15; // means can fire every 6 second chance
         this.moveStopChanceValue = 10; // means can stop move anytime 1 out of 6 second chance
         this.changePositionChanceValue = 25; // means can stop move anytime 1 out of 6 second chance
         this.setFiringValuesForDirection(x, y + radius/2);
+        this.fireMethodRef = fireMethodRef;
     }
     
     move() {
@@ -347,39 +317,9 @@ class EasyTank extends Tank {
         rect(obj.firingX, obj.firingY, obj.widthSize, obj.heightSize);
         this.setFiringValuesForDirection(obj.firingX, obj.firingY);
         if(this.canRandomFire()) {
-            this.fireBullet();
+            this.fireMethodRef(this);
         }
-        for(let i = 0; i < this.bullets.length; ) {
-            let bullet = this.bullets[i];
-            let isSpliceNeeded = false;
-            rect(bullet.x, bullet.y, 5, 5);
-            if(bullet.direction === 'left') {
-                bullet.x -= (this.defaultBulletSpeed * 2);
-                if(bullet.x < 0) {
-                    isSpliceNeeded = true;
-                }
-            } else if(bullet.direction === 'right') {
-                bullet.x += (this.defaultBulletSpeed * 2);
-                if(bullet.x > width) {
-                    isSpliceNeeded = true;
-                }
-            } else if(bullet.direction === 'up') {
-                bullet.y -= (this.defaultBulletSpeed * 2); 
-                if(bullet.y > width) {
-                    isSpliceNeeded = true;
-                }
-            } else if(bullet.direction === 'down') {
-                bullet.y += (this.defaultBulletSpeed * 2); 
-                if(bullet.y > height) {
-                    isSpliceNeeded = true;
-                }
-            }
-            if(isSpliceNeeded) {
-                this.bullets.splice(i, 1);
-            } else {
-                i++;
-            }
-        }
+        
         
     }
     
