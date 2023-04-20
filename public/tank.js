@@ -151,6 +151,8 @@ class EasyTank extends Tank {
     directionX = 1;
     directionY = 1;
     fireMethodRef;
+
+    isSet; // testing
   
     constructor(x, y, radius, fireMethodRef) {
         super(x,y, radius);
@@ -160,6 +162,8 @@ class EasyTank extends Tank {
         this.changePositionChanceValue = 25; // means can stop move anytime 1 out of 6 second chance
         this.setFiringValuesForDirection(x, y + radius/2);
         this.fireMethodRef = fireMethodRef;
+
+        this.isSet = true;  // testing
     }
     
     move() {
@@ -316,8 +320,9 @@ class EasyTank extends Tank {
         let obj  = this.fetchEdgesDetailForDirection();
         rect(obj.firingX, obj.firingY, obj.widthSize, obj.heightSize);
         this.setFiringValuesForDirection(obj.firingX, obj.firingY);
-        if(this.canRandomFire()) {
+        if(this.canRandomFire() && this.isSet == true ) { // testing
             this.fireMethodRef(this);
+            this.isSet = false;
         }
         
         

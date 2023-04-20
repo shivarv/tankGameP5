@@ -1,6 +1,6 @@
 class Bullet {
     direction = 'up';
-    bulletSize = 5;
+    bulletSize = 20;
     playerType;
     defaultBulletSpeed = 1; //must be 2 or more
     direction;

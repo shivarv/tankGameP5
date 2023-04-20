@@ -51,7 +51,7 @@ function draw(){
     for(let compPlayer of computerPlayers) {
       compPlayer.draw();
     }
-    // actForIntersectionOfBullets();
+    actForIntersectionOfBullets();
 }
 
 function renderBullets() {
@@ -83,7 +83,7 @@ function renderBulletsArray(bullets) {
                 }
             } else if(bullet.direction === 'up') {
                 bullet.y -= (bullet.defaultBulletSpeed * 2); 
-                if(bullet.y > width) {
+                if(bullet.y < 0) {
                     isSpliceNeeded = true;
                 }
             } else if(bullet.direction === 'down') {
@@ -98,7 +98,6 @@ function renderBulletsArray(bullets) {
         }
        for(let bullet of bullets) {
             bullet.draw();
-
        }
 }
 
@@ -185,16 +184,50 @@ function turnPlayer(player, direction) {
 function actForIntersectionOfBullets() {
     let playerRef = getCurrentPlayerRefByName('player1');
     cancelBulletsGotHit();
-    //cancelPlayersGotHit();
-    //cancelComputersGotHit();
+    // cancelPlayersGotHit();
+    // cancelComputersGotHit();
 }
 
 function cancelBulletsGotHit() {
-    let player1Ref = getCurrentPlayerRefByName('player1');
-    let player2Ref = getCurrentPlayerRefByName('player2');
-    this.cancelBulletsGotHitHelper(player1Ref);
-    this.cancelBulletsGotHitHelper(player2Ref);
+    let player1Bullets = bullets.player1;
+    let player2Bullets = bullets.player2;
+    let computerBullets = bullets.computer;
+    for(let i = 0; i < player1Bullets.length; i++) {
+        for(let j = 0; j < computerBullets.length; j++) {
+            if(isBulletIntersected(player1Bullets[i], computerBullets[j])) {
+                player1Bullets.splice(i, 1);
+                computerBullets.splice(j, 1);
+            }
+        }
+    }
+    for(let i = 0; i < player2Bullets.length; i++) {
+        for(let j = 0; j < computerBullets.length; j++) {
+            if(isBulletIntersected(player2Bullets[i], computerBullets[j])) {
+                player2Bullets.splice(i, 1);
+                computerBullets.splice(j, 1);
+            }
+        }
+    }
 }
+
+function isBulletIntersected(bullet1, bullet2) {
+    let isTrue = false;
+    let bullet1MinX = bullet1.x, bullet1MinY = bullet1.y, bullet1MaxX = bullet1.x + bullet1.bulletSize , bullet1MaxY = bullet1.y + bullet1.bulletSize;
+    let bullet2MinX  = bullet2.x, bullet2MinY = bullet2.y, bullet2MaxX = bullet2.x + bullet2.bulletSize, bullet2MaxY = bullet2.y + bullet2.bulletSize;
+   
+   // boolean aLeftOfB = maxAx < minBx;
+   // boolean aRightOfB = minAx > maxBx;
+   // boolean aAboveB = minAy > maxBy;
+  //  boolean aBelowB = maxAy < minBy;
+  //  return maxAx >= minBx && minAx <= maxBx && minAy <= maxBy && maxAy >= minBy
+   // console.log(bullet1);
+   // console.log(bullet2);
+   
+    return isTrue;
+}
+
+
+/*
 
 function cancelBulletsGotHitHelper(playerRef) {
     //console.log('cancelBulletsGotHitHelper')
@@ -270,4 +303,4 @@ function checkForBulletXCordinate(bullet1, bullet2) {
 
 function cancelPlayersGotHit() {
     let playerRef = getCurrentPlayerRefByName('player1');
-}
+} */
